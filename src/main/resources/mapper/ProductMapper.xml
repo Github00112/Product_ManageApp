@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssg.product_manage.mapper.ProductMapper">
+
+    <insert id="insert">
+        INSERT INTO Product(product_name,price,stock_quantity)
+        VALUES (#{product_name},#{price},#{stock_quantity})
+
+    </insert>
+
+    <select id="select" resultType="com.ssg.product_manage.domain.ProductVO">
+        SELECT * FROM Product WHERE product_id = #{product_id}
+
+    </select>
+
+    <select id="ProductList" resultType="com.ssg.product_manage.domain.ProductVO">
+        SELECT * FROM Product
+        <where>
+            <if test="keyword != null and keyword != ''">
+                Product_name like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+        order by product_id desc limit #{skip}, #{size};
+
+    </select>
+    <select id="getCount" resultType="int">
+        select count(product_id) from Product
+        <where>
+            <if test="keyword != null and keyword != ''">
+                product_name like concat('%', #{keyword}, '%')
+            </if>
+        </where>
+    </select>
+    <insert id="update">
+        UPDATE Product SET product_name = #{product_name}, price = #{price},
+                               stock_quantity = #{stock_quantity} WHERE product_id = #{product_id}
+    </insert>
+    <insert id="delete">
+        DELETE FROM Product WHERE product_id = #{product_id}
+
+    </insert>
+
+    <select id="existProductName" resultType="int" parameterType="string">
+        SELECT COUNT(*) FROM Product WHERE product_name = #{productName}
+    </select>
+
+</mapper>
